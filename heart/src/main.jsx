@@ -98,6 +98,7 @@ function foldStep1() {
                 onComplete: () => {
                     scene.remove(leftGroup, rightGroup);
                     scene.add(paperGroup);
+
                     foldStep2();
                 }
             });
@@ -148,7 +149,8 @@ function foldStep2() {
             onComplete: () => {
                 scene.remove(topGroup, bottomGroup);
                 scene.add(paperGroup);
-                foldstep3;
+                
+                foldstep3();
             }
         });
     }
@@ -156,7 +158,141 @@ function foldStep2() {
 }
 
 function foldstep3() {
-  
+    scene.remove(paperGroup);
+
+    const upperTopGeometry = new THREE.BufferGeometry();
+    upperTopGeometry.setAttribute('position', new THREE.BufferAttribute(new Float32Array([
+        0, 0.7071, 0,        // Top vertex
+        -0.35355, 0.35355, 0, // Left fold line vertex
+        0.35355, 0.35355, 0   // Right fold line vertex
+    ]), 3));
+
+
+    const lowerTopGeometry1 = new THREE.BufferGeometry();
+    lowerTopGeometry1.setAttribute('position', new THREE.BufferAttribute(new Float32Array([
+        -0.35355, 0.35355, 0, // Left fold line vertex
+        -0.7071, 0, 0,        // Bottom-left vertex
+        0.35355, 0.35355, 0   // Right fold line vertex
+    ]), 3));
+
+    const lowerTopGeometry2 = new THREE.BufferGeometry();
+    lowerTopGeometry2.setAttribute('position', new THREE.BufferAttribute(new Float32Array([
+        0.35355, 0.35355, 0,  // Right fold line vertex
+        -0.7071, 0, 0,        // Bottom-left vertex
+        0.7071, 0, 0          // Bottom-right vertex
+    ]), 3));
+
+    const bottomGeometry = new THREE.BufferGeometry();
+    bottomGeometry.setAttribute('position', new THREE.BufferAttribute(new Float32Array([
+        0, -0.7071, 0,     // Bottom point
+        -0.7071, 0, 0,     // Left point
+        0.7071, 0, 0       // Right point
+    ]), 3));
+
+    const upperGroup = new THREE.Group();
+    const upperFrontMesh = new THREE.Mesh(upperTopGeometry, frontMaterial);
+    const upperBackMesh = new THREE.Mesh(upperTopGeometry, backMaterial);
+    upperBackMesh.position.z = -0.02;
+    upperGroup.add(upperFrontMesh, upperBackMesh);
+
+    upperFrontMesh.position.y -= 0.35355; 
+    upperBackMesh.position.y -= 0.35355;
+    upperGroup.position.y += 0.35355; 
+    scene.add(upperGroup);
+
+    const lowerTopGroup = new THREE.Group();
+    const lowerTopFrontMesh1 = new THREE.Mesh(lowerTopGeometry1, frontMaterial);
+    const lowerTopBackMesh1 = new THREE.Mesh(lowerTopGeometry1, backMaterial);
+    lowerTopBackMesh1.position.z = -0.02;
+    const lowerTopFrontMesh2 = new THREE.Mesh(lowerTopGeometry2, frontMaterial);
+    const lowerTopBackMesh2 = new THREE.Mesh(lowerTopGeometry2, backMaterial);
+    lowerTopBackMesh2.position.z = -0.02;
+    lowerTopGroup.add(lowerTopFrontMesh1, lowerTopBackMesh1, lowerTopFrontMesh2, lowerTopBackMesh2);
+    scene.add(lowerTopGroup);
+
+    const bottomGroup = new THREE.Group();
+    const bottomFrontMesh = new THREE.Mesh(bottomGeometry, frontMaterial);
+    const bottomBackMesh = new THREE.Mesh(bottomGeometry, backMaterial);
+    bottomBackMesh.position.z = -0.02;
+    bottomGroup.add(bottomFrontMesh, bottomBackMesh);
+    scene.add(bottomGroup);
+
+    gsap.to(upperGroup.rotation, {
+        duration: 1,
+        x: Math.PI, 
+        onUpdate: () => {
+            renderer.render(scene, camera);
+        },
+        onComplete: () => {
+            // foldstep4();
+        }
+    });
+}
+
+function foldstep4() {
+    scene.remove(paperGroup);
+
+    const upperTopGeometry = new THREE.BufferGeometry();
+    upperTopGeometry.setAttribute('position', new THREE.BufferAttribute(new Float32Array([
+        0, 0.7071, 0,         // Top vertex
+        -0.35355, 0.35355, 0, // Left fold line vertex
+        0.35355, 0.35355, 0   // Right fold line vertex
+    ]), 3));
+
+    const lowerTopGeometry1 = new THREE.BufferGeometry();
+    lowerTopGeometry1.setAttribute('position', new THREE.BufferAttribute(new Float32Array([
+        -0.35355, 0.35355, 0, // Left fold line vertex
+        -0.7071, 0, 0,        // Bottom-left vertex
+        0.35355, 0.35355, 0   // Right fold line vertex
+    ]), 3));
+
+    const lowerTopGeometry2 = new THREE.BufferGeometry();
+    lowerTopGeometry2.setAttribute('position', new THREE.BufferAttribute(new Float32Array([
+        0.35355, 0.35355, 0,  // Right fold line vertex
+        -0.7071, 0, 0,        // Bottom-left vertex
+        0.7071, 0, 0          // Bottom-right vertex
+    ]), 3));
+
+    const bottomGeometry = new THREE.BufferGeometry();
+    bottomGeometry.setAttribute('position', new THREE.BufferAttribute(new Float32Array([
+        0, -0.7071, 0,        // Bottom vertex
+        -0.35355, -0.35355, 0,// Left fold line vertex
+        0.35355, -0.35355, 0  // Right fold line vertex
+    ]), 3));
+
+    const lowerTopGroup = new THREE.Group();
+    const lowerTopFrontMesh1 = new THREE.Mesh(lowerTopGeometry1, frontMaterial);
+    const lowerTopBackMesh1 = new THREE.Mesh(lowerTopGeometry1, backMaterial);
+    lowerTopBackMesh1.position.z = -0.02;
+    const lowerTopFrontMesh2 = new THREE.Mesh(lowerTopGeometry2, frontMaterial);
+    const lowerTopBackMesh2 = new THREE.Mesh(lowerTopGeometry2, backMaterial);
+    lowerTopBackMesh2.position.z = -0.02;
+    lowerTopGroup.add(lowerTopFrontMesh1, lowerTopBackMesh1, lowerTopFrontMesh2, lowerTopBackMesh2);
+    scene.add(lowerTopGroup);
+
+    const bottomGroup = new THREE.Group();
+    const bottomFrontMesh = new THREE.Mesh(bottomGeometry, frontMaterial);
+    const bottomBackMesh = new THREE.Mesh(bottomGeometry, backMaterial);
+    bottomBackMesh.position.z = -0.02;
+    bottomGroup.add(bottomFrontMesh, bottomBackMesh);
+
+    // Adjust the pivot point of the bottom triangle
+    // The fold line is at y = -0.35355
+    bottomFrontMesh.position.y += 0.35355; // Move the bottom triangle up so the fold line is at the origin
+    bottomBackMesh.position.y += 0.35355;
+    bottomGroup.position.y -= 0.35355; 
+    scene.add(bottomGroup);
+
+    gsap.to(bottomGroup.rotation, {
+        duration: 1,
+        x: -Math.PI, // Fold upward (negative rotation around x-axis)
+        onUpdate: () => {
+            renderer.render(scene, camera);
+        },
+        onComplete: () => {
+            console.log("Fold complete!");
+        }
+    });
 }
 
 document.addEventListener("click", () => {
